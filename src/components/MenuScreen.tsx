@@ -32,7 +32,7 @@ export default function MenuScreen({ banks, onPlay, onEditBank, onDeleteBank, on
         {/* Header */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-gradient-to-br from-amber-400 to-orange-500 shadow-lg shadow-orange-500/30 mb-4 text-5xl select-none">🧮</div>
-          <h1 className="text-4xl font-bold text-white mb-1" style={{ fontFamily: 'Fredoka, sans-serif' }}>Cerdas Cermat</h1>
+          <h1 className="text-4xl font-bold text-white mb-1" style={{ fontFamily: 'Fredoka, sans-serif' }}>Cerdas Ora Cermat</h1>
           <p className="text-purple-300 text-lg" style={{ fontFamily: 'Fredoka, sans-serif' }}>Buat Soalmu Sendiri!</p>
         </div>
 
