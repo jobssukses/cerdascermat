@@ -1,11 +1,16 @@
 import { useState, useCallback } from 'react';
 import { AppScreen, QuestionBank, CustomQuestion } from './types';
 import { getAllBanks, saveBank, deleteBank, saveResult, getDefaultTemplates } from './storage';
+import { saveQuizResult } from './supabase';
 import MenuScreen from './components/MenuScreen';
 import BankEditor from './components/BankEditor';
 import SelectScreen from './components/SelectScreen';
 import GameScreen from './components/GameScreen';
 import ResultScreen from './components/ResultScreen';
+import AdminScreen from './components/AdminScreen';
+
+// ⚠️ GANTI PASSWORD ADMIN SESUAI KEINGINAN ANDA
+const ADMIN_PASSWORD = 'admin123';
 
 interface GameSession {
   playerName: string;
@@ -19,8 +24,10 @@ interface GameSession {
   avgTime: number;
 }
 
+type ExtendedScreen = AppScreen | 'admin';
+
 export default function App() {
-  const [screen, setScreen] = useState<AppScreen>('menu');
+  const [screen, setScreen] = useState<ExtendedScreen>('menu');
   const [banks, setBanks] = useState<QuestionBank[]>(getAllBanks());
   const [editingBank, setEditingBank] = useState<QuestionBank | null | undefined>(undefined);
   const [session, setSession] = useState<GameSession>({
@@ -33,6 +40,7 @@ export default function App() {
 
   // Menu handlers
   const handlePlay = useCallback(() => setScreen('select'), []);
+  const handleAdmin = useCallback(() => setScreen('admin'), []);
 
   const handleEditBank = useCallback((bank: QuestionBank | null) => {
     setEditingBank(bank);
@@ -72,6 +80,7 @@ export default function App() {
     setSession(s => {
       const updated = { ...s, score, correct, wrong, skipped, maxStreak, avgTime };
 
+      // Save to local storage
       saveResult({
         playerName: updated.playerName,
         bankName: updated.bankName,
@@ -83,6 +92,19 @@ export default function App() {
         maxStreak,
         date: new Date().toLocaleDateString('id-ID'),
         avgTime,
+      });
+
+      // Save to Supabase (async, no await needed)
+      saveQuizResult({
+        player_name: updated.playerName,
+        bank_name: updated.bankName,
+        score,
+        total_questions: updated.questions.length,
+        correct_answers: correct,
+        wrong_answers: wrong,
+        skipped,
+        max_streak: maxStreak,
+        avg_time: avgTime,
       });
 
       return updated;
@@ -110,6 +132,7 @@ export default function App() {
           onDeleteBank={handleDeleteBank}
           onImportTemplate={handleImportTemplate}
           templates={templates}
+          onAdmin={handleAdmin}
         />
       )}
       {screen === 'editor' && (
@@ -148,6 +171,12 @@ export default function App() {
           avgTime={session.avgTime}
           onPlayAgain={handlePlayAgain}
           onMenu={handleMenu}
+        />
+      )}
+      {screen === 'admin' && (
+        <AdminScreen
+          onBack={handleMenu}
+          adminPassword={ADMIN_PASSWORD}
         />
       )}
     </>

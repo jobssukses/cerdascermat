@@ -10,9 +10,10 @@ interface Props {
   onDeleteBank: (id: string) => void;
   onImportTemplate: (bank: QuestionBank) => void;
   templates: QuestionBank[];
+  onAdmin: () => void;
 }
 
-export default function MenuScreen({ banks, onPlay, onEditBank, onDeleteBank, onImportTemplate, templates }: Props) {
+export default function MenuScreen({ banks, onPlay, onEditBank, onDeleteBank, onImportTemplate, templates, onAdmin }: Props) {
   const [tab, setTab] = useState<'banks' | 'history' | 'templates'>('banks');
   const [results, setResults] = useState<GameResult[]>(getResults());
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
@@ -37,9 +38,16 @@ export default function MenuScreen({ banks, onPlay, onEditBank, onDeleteBank, on
 
         {/* Start Quiz Button */}
         <button onClick={() => { sfx.click(); onPlay(); }}
-          className="w-full py-4 rounded-2xl bg-gradient-to-r from-green-400 to-emerald-500 text-white font-bold text-xl shadow-lg shadow-emerald-600/30 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all mb-6"
+          className="w-full py-4 rounded-2xl bg-gradient-to-r from-green-400 to-emerald-500 text-white font-bold text-xl shadow-lg shadow-emerald-600/30 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all mb-4"
           style={{ fontFamily: 'Fredoka, sans-serif' }}>
           🚀 Mulai Kuis
+        </button>
+
+        {/* Admin Button */}
+        <button onClick={() => { sfx.click(); onAdmin(); }}
+          className="w-full py-3 rounded-2xl bg-white/5 border border-white/10 text-white/50 font-medium text-sm hover:bg-white/10 hover:text-white/70 hover:border-white/20 transition-all mb-6"
+          style={{ fontFamily: 'Fredoka, sans-serif' }}>
+          🛡️ Admin Panel
         </button>
 
         {/* Tabs */}
